@@ -191,7 +191,7 @@ function DateGrid({
           //   console.log(num);
 
           styles = {
-            backgroundColor: "orange",
+            backgroundColor: "deeppink",
           };
         } else if (
           selectedRange.fromMonth !== null &&
@@ -205,7 +205,7 @@ function DateGrid({
             num <= selectedRange.toDate &&
             selectedRange.fromMonth === month
           ) {
-            styles = { backgroundColor: "orange" };
+            styles = { backgroundColor: "deeppink" };
           }
         } else if (
           selectedRange.fromMonth !== null &&
@@ -220,19 +220,19 @@ function DateGrid({
             num <= selectedRange.toDate + numDaysOfMonth
           ) {
             // console.log(num);
-            styles = { backgroundColor: "orange", color: "#121212" };
+            styles = { backgroundColor: "deeppink", color: "#121212" };
           } else if (
             selectedRange.toMonth === month &&
             num + numDaysOfMonth >= selectedRange.fromDate &&
             num <= selectedRange.toDate
           ) {
             // console.log(num);
-            styles = { backgroundColor: "orange", color: "#121212" };
+            styles = { backgroundColor: "deeppink", color: "#121212" };
           } else if (
             selectedRange.fromMonth < month &&
             selectedRange.toMonth > month
           ) {
-            styles = { backgroundColor: "orange", color: "#121212" };
+            styles = { backgroundColor: "deeppink", color: "#121212" };
           }
         }
         return (

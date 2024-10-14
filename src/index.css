@@ -9,7 +9,8 @@ html {
 }
 
 body {
-  font-family: sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 .grid {
@@ -78,7 +79,8 @@ body {
   text-transform: uppercase;
   text-align: center;
   font-weight: 400;
-  color: rgb(230, 211, 221);
+  color: rgb(12, 10, 11);
+  font-weight: 600;
   background-color: deeppink;
   padding: 2rem;
   align-self: normal;
@@ -98,7 +100,7 @@ body {
 }
 
 .calendar__view button {
-  font-weight: bolder;
+  font-weight: bold;
   font-size: 1.4rem;
   display: block;
   height: 4rem;
@@ -115,6 +117,7 @@ body {
 
 .selected-month,
 .selected-year {
+  font-family: inherit;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -149,6 +152,8 @@ option {
   align-self: flex-end;
 }
 .btn {
+  font-size: 1.5rem;
+  font-family: inherit;
   display: block;
   padding: 1rem 2rem;
   border-radius: 2px;
@@ -159,6 +164,10 @@ option {
   cursor: pointer;
 }
 .btn--prev {
+  background-color: rgb(97, 43, 72);
+  color: #fff;
 }
 .btn--next {
+  background-color: rgb(255, 185, 223);
+  color: #2c2121;
 }
