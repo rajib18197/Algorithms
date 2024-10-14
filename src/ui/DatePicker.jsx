@@ -248,10 +248,18 @@ function DateGrid({
                   value.toMonth
                 ) {
                   if (month > value.fromMonth) {
+                    console.log("hello");
+
                     return {
                       ...value,
                       toDate: Number(num),
                       toMonth: month,
+                    };
+                  } else if (month < value.fromMonth) {
+                    return {
+                      ...value,
+                      fromDate: Number(num),
+                      fromMonth: month,
                     };
                   }
                 }

@@ -3,7 +3,7 @@ import { wait } from "./services/apiCabins";
 
 function App() {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["cabins", 1],
+    queryKey: ["cabins"],
     queryFn: () => wait(3000),
   });
 
@@ -11,10 +11,16 @@ function App() {
   return <div>{data.length}</div>;
 }
 
+export function Test() {
+  console.log(Math.random());
+
+  return <div>Test {Math.random()}</div>;
+}
+
 export function CabinTable() {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["cabins", 2],
-    queryFn: () => wait(2000),
+    queryKey: ["cabins"],
+    queryFn: () => wait(3000),
   });
   if (isLoading) return <h2>Loading App</h2>;
 

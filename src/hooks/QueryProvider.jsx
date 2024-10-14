@@ -1,68 +1,61 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-const QueryContext = createContext([{}, () => {}]);
-const requestMemoize = {};
+const QueryContext = createContext();
 
-export default function QueryProvider({ children }) {
-  const tuple = useState({});
+export default function QueryProvider({ children, client }) {
+  const [isRun, setIsRun] = useState(false);
+
   return (
-    <QueryContext.Provider value={tuple}>{children}</QueryContext.Provider>
+    <QueryContext.Provider value={{ client: client, isRun, setIsRun }}>
+      {children}
+    </QueryContext.Provider>
   );
 }
 
 export function useQuery({ queryKey, queryFn }) {
-  const [state, setState] = useState({
-    [queryKey[0]]: { data: null, isLoading: true, isError: false, error: null },
-  });
-
-  console.log(state[queryKey[0]]);
-  // console.log(QueryContext[queryKey[0]]);
+  const serverCache = useContext(QueryContext);
+  // console.log(serverCache);
 
   useEffect(() => {
-    const update = (newState) =>
-      setState((prev) => ({
-        ...prev,
-        [queryKey[0]]: { ...prev[queryKey[0]], ...newState },
-      }));
-
-    // if (requestMemoize[queryKey[0]]) {
-    //   update(requestMemoize[queryKey[0]]);
-    //   return;
-    // }
+    console.log("j");
 
     let ignore = false;
-    requestMemoize[queryKey[0]] = state;
+    if (serverCache.client.cache[queryKey[0]]) {
+      console.log("cached");
+
+      return;
+    }
 
     async function fetchData() {
-      console.log(queryKey[1]);
-
-      update({
+      serverCache.client.cache[queryKey[0]] = {
+        ...serverCache.client.cache[queryKey[0]],
         data: undefined,
         isLoading: true,
         error: null,
         isError: false,
-      });
+      };
 
       try {
-        console.log(state[queryKey[0]]);
-
         const data = await queryFn();
         if (ignore) return;
 
-        update({
+        serverCache.client.cache[queryKey[0]] = {
+          ...serverCache.client.cache[queryKey[0]],
           data,
           isLoading: false,
           error: null,
           isError: false,
-        });
+        };
+
+        serverCache.setIsRun((val) => !val);
       } catch (err) {
         console.error(err, 10111);
-        update({
+        serverCache.client.cache[queryKey[0]] = {
           data: null,
           isLoading: false,
           error: err,
           isError: true,
-        });
+        };
       }
     }
 
@@ -71,7 +64,13 @@ export function useQuery({ queryKey, queryFn }) {
     return () => {
       ignore = true;
     };
-  }, [queryKey[0]]);
+  }, [...queryKey]);
 
-  return state[queryKey[0]];
+  return (
+    serverCache.client.cache[queryKey[0]] || {
+      data: undefined,
+      isLoading: true,
+      isError: false,
+    }
+  );
 }
