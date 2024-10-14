@@ -43,6 +43,18 @@ body {
   border: none;
   cursor: pointer;
 }
+
+.datepicker {
+  width: 80rem;
+  margin: auto;
+  max-width: 100%;
+  border: 3px solid deeppink;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .calendar {
   display: flex;
   flex-direction: column;
@@ -62,12 +74,14 @@ body {
 }
 
 .calendar__selection-date {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: rgb(92, 41, 68);
-  background-color: rgb(198 153 99);
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 400;
+  color: rgb(230, 211, 221);
+  background-color: deeppink;
   padding: 2rem;
-  border-radius: 4px;
+  align-self: normal;
 }
 
 .calendar__view {
@@ -132,6 +146,7 @@ option {
 .btn-group {
   display: flex;
   gap: 1rem;
+  align-self: flex-end;
 }
 .btn {
   display: block;

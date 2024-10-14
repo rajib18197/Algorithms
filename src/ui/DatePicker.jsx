@@ -33,22 +33,49 @@ export default function DatePicker() {
   const firstDate = new Date(year, month);
   const secondDate = new Date(year, month + 1);
 
+  console.log(date);
+
   return (
-    <div className="grid">
-      <Calendar
-        date={firstDate}
-        firstDate={firstDate}
-        setDate={setDate}
-        selectedRange={selectedRange}
-        setSelectedRange={setSelectedRange}
-      />
-      <Calendar
-        date={secondDate}
-        firstDate={firstDate}
-        setDate={setDate}
-        selectedRange={selectedRange}
-        setSelectedRange={setSelectedRange}
-      />
+    <div className="datepicker">
+      <div className="grid">
+        <Calendar
+          date={firstDate}
+          firstDate={firstDate}
+          setDate={setDate}
+          selectedRange={selectedRange}
+          setSelectedRange={setSelectedRange}
+        />
+        <Calendar
+          date={secondDate}
+          firstDate={firstDate}
+          setDate={setDate}
+          selectedRange={selectedRange}
+          setSelectedRange={setSelectedRange}
+        />
+      </div>
+      <SelectedTextBox selectedRange={selectedRange} />
+    </div>
+  );
+}
+
+function SelectedTextBox({ selectedRange }) {
+  console.log(selectedRange);
+
+  if (
+    !selectedRange.fromMonth ||
+    !selectedRange.toMonth ||
+    !selectedRange.fromDate
+  ) {
+    console.log(111);
+
+    return null;
+  }
+
+  return (
+    <div className="calendar__selection-date">
+      Selected Date: {monthsInAYear[selectedRange.fromMonth]}{" "}
+      {selectedRange.fromDate} - {monthsInAYear[selectedRange.toMonth]}{" "}
+      {selectedRange.toDate}
     </div>
   );
 }
@@ -161,7 +188,7 @@ function DateGrid({
           Number(num) === selectedRange.fromDate &&
           selectedRange.fromMonth === month
         ) {
-          console.log(num);
+          //   console.log(num);
 
           styles = {
             backgroundColor: "orange",
@@ -171,7 +198,7 @@ function DateGrid({
           selectedRange.toMonth !== null &&
           selectedRange.fromMonth === selectedRange.toMonth
         ) {
-          console.log(num);
+          //   console.log(num);
 
           if (
             num >= selectedRange.fromDate &&
@@ -192,20 +219,20 @@ function DateGrid({
             num >= selectedRange.fromDate &&
             num <= selectedRange.toDate + numDaysOfMonth
           ) {
-            console.log(num);
-            styles = { "background-color": "orange", color: "#121212" };
+            // console.log(num);
+            styles = { backgroundColor: "orange", color: "#121212" };
           } else if (
             selectedRange.toMonth === month &&
             num + numDaysOfMonth >= selectedRange.fromDate &&
             num <= selectedRange.toDate
           ) {
-            console.log(num);
-            styles = { "background-color": "orange", color: "#121212" };
+            // console.log(num);
+            styles = { backgroundColor: "orange", color: "#121212" };
           } else if (
             selectedRange.fromMonth < month &&
             selectedRange.toMonth > month
           ) {
-            styles = { "background-color": "orange", color: "#121212" };
+            styles = { backgroundColor: "orange", color: "#121212" };
           }
         }
         return (
