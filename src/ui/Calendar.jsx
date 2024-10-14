@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DatePicker from "./DatePicker";
 const years = [2020, 2021, 2022, 2023, 2024, 2025];
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthsInAYear = [
@@ -15,8 +16,14 @@ const monthsInAYear = [
   "November",
   "December",
 ];
-
-export default function DatePicker() {
+function DatePickerCalendar() {
+  return (
+    <div>
+      <DatePicker />
+    </div>
+  );
+}
+export default function DatePickers() {
   const [date, setDate] = useState(new Date());
   const [selectedRange, setSelectedRange] = useState({
     fromDate: null,
@@ -26,18 +33,22 @@ export default function DatePicker() {
   });
   const month = date.getMonth();
   const year = date.getFullYear();
+  const firstDate = new Date(year, month);
+  const secondDate = new Daye(year, month + 1);
 
   return (
-    <div>
+    <div className="grid">
       {/* <SelectedDateBox /> */}
       <Calendar
-        date={new Date(year, month)}
+        firstDate={firstDate}
+        date={firstDate}
         setDate={setDate}
         selectedRange={selectedRange}
         setSelectedRange={setSelectedRange}
       />
       <Calendar
-        date={new Date(year, month + 1)}
+        firstDate={firstDate}
+        date={secondDate}
         setDate={setDate}
         selectedRange={selectedRange}
         setSelectedRange={setSelectedRange}
@@ -60,7 +71,13 @@ function SelectedDateBox() {
   );
 }
 
-function Calendar({ date, setDate, selectedRange, setSelectedRange }) {
+function Calendar({
+  date,
+  firstDate,
+  setDate,
+  selectedRange,
+  setSelectedRange,
+}) {
   console.log(selectedRange);
 
   const month = date.getMonth();
@@ -72,63 +89,48 @@ function Calendar({ date, setDate, selectedRange, setSelectedRange }) {
   const numDaysOfMonth = lastDayOfMonth.getDate();
 
   return (
-    <div>
-      <div>
-        <select
-          name=""
-          id=""
-          value={`${monthName}`}
-          onChange={(e) => {
-            setDate(new Date(year, monthsInAYear.indexOf(e.target.value)));
-          }}
-        >
-          {monthsInAYear.map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </select>
+    <div className="calendar">
+      <div className="calendar__header">
+        <div className="selection-box">
+          <select
+            name=""
+            id=""
+            className="selected-month"
+            value={`${monthName}`}
+            onChange={(e) => {
+              setDate(new Date(year, monthsInAYear.indexOf(e.target.value)));
+            }}
+          >
+            {monthsInAYear.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
 
-        <select
-          name=""
-          id=""
-          value={`${year}`}
-          onChange={(e) => {
-            setDate(new Date(Number(e.target.value), month));
-          }}
-        >
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-      </div>
+          <select
+            name=""
+            id=""
+            className="selected-year"
+            value={`${year}`}
+            onChange={(e) => {
+              setDate(new Date(Number(e.target.value), month));
+            }}
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div>
-        <button
-          onClick={() => {
-            setDate(new Date(year, month - 1));
-          }}
-        >
-          prev
-        </button>
-        <span>
+        {/* <div className="calendar__text">
           {monthName}, {year}
-          {selectedRange.fromMonth === selectedRange.toMonth &&
-            selectedRange.fromDate &&
-            `selected range: ${selectedRange.fromDate} - ${selectedRange.toDate}`}
-        </span>
-        <button
-          onClick={() => {
-            setDate(new Date(year, month + 1));
-          }}
-        >
-          next
-        </button>
+        </div> */}
       </div>
 
-      <div className="calendar-view">
+      <div className="calendar__view">
         {weekDays.map((day) => (
           <span key={day}>{day}</span>
         ))}
@@ -280,6 +282,42 @@ function Calendar({ date, setDate, selectedRange, setSelectedRange }) {
           );
         })}
       </div>
+
+      {selectedRange.fromMonth === selectedRange.toMonth &&
+        selectedRange.fromDate && (
+          <p className="calendar__selection-date">
+            selected range: {selectedRange.fromDate} - {selectedRange.toDate}
+          </p>
+        )}
+
+      <div className="btn-group">
+        <button
+          className="btn btn--prev"
+          onClick={() => {
+            if (firstDate.getMonth() !== date.getMonth()) {
+              setDate(new Date(year, firstDate.getMonth() - 1));
+              return;
+            }
+
+            setDate(new Date(year, month - 1));
+          }}
+        >
+          prev
+        </button>
+
+        <button
+          className="btn btn--next"
+          onClick={() => {
+            if (firstDate.getMonth() !== date.getMonth()) {
+              setDate(new Date(year, firstDate.getMonth() + 1));
+              return;
+            }
+            setDate(new Date(year, month + 1));
+          }}
+        >
+          next
+        </button>
+      </div>
     </div>
   );
 }
@@ -287,19 +325,3 @@ function Calendar({ date, setDate, selectedRange, setSelectedRange }) {
 const range = function (numbers) {
   return Array.from({ length: numbers }, (_, i) => i + 1);
 };
-
-// (selectedRange.fromMonth === month ||
-//     selectedRange.toMonth === month) &&
-//   selectedRange.fromMonth === selectedRange.toMonth
-//     ? num >= selectedRange.fromDate && num <= selectedRange.toDate
-//       ? { "background-color": "orange", color: "#121212" }
-//       : {}
-//     : selectedRange.fromMonth === month
-//     ? num >= selectedRange.fromDate &&
-//       num <= selectedRange.toDate + numDaysOfMonth
-//       ? { "background-color": "orange", color: "#121212" }
-//       : {}
-//     : num + numDaysOfMonth >= selectedRange.fromDate &&
-//       num <= selectedRange.toDate
-//     ? { "background-color": "orange", color: "#121212" }
-//     : {}
