@@ -1,23 +1,29 @@
 export default class QueryClient {
   cache = {};
+  dedup = [];
 
   constructor() {
     this.observers = [];
   }
 
-  subscribe(Component) {
-    this.observers.push(Component);
+  subscribe(callback) {
+    this.dedup.push({ ...callback });
   }
 
-  Notify() {
-    return (
-      <>
-        {this.observers.map((ObserverComponent) => (
-          <ObserverComponent.NewQueryProvider client={ObserverComponent.client}>
-            <ObserverComponent.ChildrenComponent />
-          </ObserverComponent.NewQueryProvider>
-        ))}
-      </>
-    );
+  unsubscribe(func) {
+    this.observers = this.observers.filter((observer) => {
+      console.log(func);
+      console.log(observer);
+
+      return observer !== func;
+    });
+  }
+
+  notify(key) {
+    this.dedup.map((observer) => {
+      if (observer.key === key) {
+        observer.fn();
+      }
+    });
   }
 }

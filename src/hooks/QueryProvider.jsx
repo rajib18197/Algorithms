@@ -3,32 +3,30 @@ import { createContext, useContext, useEffect, useState } from "react";
 const QueryContext = createContext();
 
 export default function QueryProvider({ children, client }) {
-  const [isRun, setIsRun] = useState(false);
-
   return (
-    <QueryContext.Provider value={{ client: client, isRun, setIsRun }}>
-      {children}
-    </QueryContext.Provider>
+    <QueryContext.Provider value={client}>{children}</QueryContext.Provider>
   );
 }
 
 export function useQuery({ queryKey, queryFn }) {
+  const [isRun, setIsRun] = useState(false);
   const serverCache = useContext(QueryContext);
   // console.log(serverCache);
 
   useEffect(() => {
     console.log("j");
-
+    const update = () => setIsRun((prev) => !prev);
     let ignore = false;
-    if (serverCache.client.cache[queryKey[0]]) {
-      console.log("cached");
+    serverCache.subscribe({ fn: update, key: queryKey[0] });
 
+    if (serverCache.cache[queryKey[0]]) {
+      console.log("cached");
       return;
     }
 
     async function fetchData() {
-      serverCache.client.cache[queryKey[0]] = {
-        ...serverCache.client.cache[queryKey[0]],
+      serverCache.cache[queryKey[0]] = {
+        ...serverCache.cache[queryKey[0]],
         data: undefined,
         isLoading: true,
         error: null,
@@ -39,18 +37,17 @@ export function useQuery({ queryKey, queryFn }) {
         const data = await queryFn();
         if (ignore) return;
 
-        serverCache.client.cache[queryKey[0]] = {
-          ...serverCache.client.cache[queryKey[0]],
+        serverCache.cache[queryKey[0]] = {
+          ...serverCache.cache[queryKey[0]],
           data,
           isLoading: false,
           error: null,
           isError: false,
         };
-
-        serverCache.setIsRun((val) => !val);
+        serverCache.notify(queryKey[0]);
       } catch (err) {
         console.error(err, 10111);
-        serverCache.client.cache[queryKey[0]] = {
+        serverCache.cache[queryKey[0]] = {
           data: null,
           isLoading: false,
           error: err,
@@ -67,7 +64,7 @@ export function useQuery({ queryKey, queryFn }) {
   }, [...queryKey]);
 
   return (
-    serverCache.client.cache[queryKey[0]] || {
+    serverCache.cache[queryKey[0]] || {
       data: undefined,
       isLoading: true,
       isError: false,
