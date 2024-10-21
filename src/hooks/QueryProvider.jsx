@@ -9,9 +9,8 @@ export default function QueryProvider({ children, client }) {
 }
 
 export function useQuery({ queryKey, queryFn }) {
-  const [isRun, setIsRun] = useState(false);
+  const [_isRun, setIsRun] = useState(false);
   const serverCache = useContext(QueryContext);
-  // console.log(serverCache);
 
   useEffect(() => {
     console.log("j");
